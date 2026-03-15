@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { MapPin } from 'lucide-react';
 
 export default function WeddingEcard() {
   useEffect(() => {
@@ -82,7 +83,12 @@ export default function WeddingEcard() {
             </div>
           </div>
           <div className="xs r d5" style={{ marginTop: '4px' }}>KACHONG HILLS TENTED RESORT TRANG</div>
-          <div className="thai r d6" style={{ fontSize: '12px', color: 'var(--muted)' }}>กะช่องฮิลส์ เต็นท์ รีสอร์ท จ.ตรัง</div>
+          <div className="thai r d6" style={{ fontSize: '12px' }}>
+            <a href="https://maps.app.goo.gl/Lv1XmGrwo2rdrdw57" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#e07b8a', textDecoration: 'none', fontWeight: 600 }}>
+              <MapPin size={14} strokeWidth={2.2} />
+              กะช่องฮิลส์ เต็นท์ รีสอร์ท จ.ตรัง
+            </a>
+          </div>
         </div>
         <div className="sep"></div>
 
@@ -169,7 +175,10 @@ export default function WeddingEcard() {
           <div className="div-lg r d4"></div>
           <div className="thai r d5" style={{ fontSize: '13px', color: 'var(--muted)', lineHeight: '2.1' }}>
             Kachong Hills Tented Resort Trang<br />
-            กะช่องฮิลส์ เต็นท์ รีสอร์ท จ.ตรัง<br />
+            <a href="https://maps.app.goo.gl/Lv1XmGrwo2rdrdw57" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#e07b8a', textDecoration: 'none', fontWeight: 600 }}>
+              <MapPin size={15} strokeWidth={2.2} />
+              กะช่องฮิลส์ เต็นท์ รีสอร์ท จ.ตรัง
+            </a><br />
             Saturday 19 December 2026 · 12:59 PM
           </div>
           <div className="r d6"><span className="hashtag" style={{ fontSize: '12px' }}>#ItWasMeantToBeChin</span></div>
