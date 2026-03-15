@@ -132,7 +132,7 @@ body::after {
 /* Scroll-reveal animation (Intersection Observer) */
 .reveal {
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(15px);
   transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -144,8 +144,10 @@ body::after {
 
 /* COVER */
 #cover {
-  padding: 0;
+  padding: 0 !important;
+  margin: 0 !important;
   gap: 2px;
+  justify-content: center !important;
 }
 
 #cover .ds {
