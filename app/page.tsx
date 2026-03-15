@@ -35,7 +35,56 @@ const SECTIONS = [
   { id: 'closing', label: 'Closing' },
 ];
 
+const PHOTOS = [
+  "/images/photo-m1.jpg",
+  "/images/photo-m2.jpg",
+  "/images/photo-m3.jpg",
+  "/images/photo-m4.jpg",
+  "/images/photo-m5.jpg",
+  "/images/photo-m6.jpg",
+  "/images/photo-m7.jpg",
+];
+
 export default function WeddingEcard() {
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => setTouchStart(e.targetTouches[0].clientX);
+  const handleTouchMove = (e: React.TouchEvent) => setTouchEnd(e.targetTouches[0].clientX);
+  const handleTouchEnd = () => {
+    if (touchStart === null || touchEnd === null) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+    if (isLeftSwipe) {
+      setLightboxIndex((prev) => (prev === PHOTOS.length - 1 ? 0 : prev! + 1));
+    }
+    if (isRightSwipe) {
+      setLightboxIndex((prev) => (prev === 0 ? PHOTOS.length - 1 : prev! - 1));
+    }
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
+
+  useEffect(() => {
+    if (lightboxIndex === null) {
+      document.body.style.overflow = '';
+      return;
+    }
+    document.body.style.overflow = 'hidden';
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') setLightboxIndex((prev) => (prev === PHOTOS.length - 1 ? 0 : prev! + 1));
+      if (e.key === 'ArrowLeft') setLightboxIndex((prev) => (prev === 0 ? PHOTOS.length - 1 : prev! - 1));
+      if (e.key === 'Escape') setLightboxIndex(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [lightboxIndex]);
+
   useEffect(() => {
     // Hide scroll hint on first interaction
     const handleScrollHint = () => {
@@ -81,6 +130,13 @@ export default function WeddingEcard() {
           </R>
           <R className="xs" delay={0.5}>
             <div style={{ fontSize: '11px', letterSpacing: '.2em', marginTop: '-2px' }}>1 2 : 5 9 &nbsp;&nbsp; P M</div>
+          </R>
+          <R delay={0.6}>
+            <div style={{ marginTop: '24px' }}>
+              <a href="https://forms.gle/vbJbmdb4bSkvk9yA6" target="_blank" rel="noopener noreferrer" className="btn-register">
+                ยืนยันการเข้าร่วมงาน
+              </a>
+            </div>
           </R>
         </div>
         <div className="sep"></div>
@@ -181,13 +237,11 @@ export default function WeddingEcard() {
           <R delay={0.1} className="w-full">
             <div className="mag">
               {/* eslint-disable @next/next/no-img-element */}
-              <div className="pf m1"><img src="/images/photo-m1.jpg" alt="Photo 1" /></div>
-              <div className="pf m2"><img src="/images/photo-m2.jpg" alt="Photo 2" /></div>
-              <div className="pf m3"><img src="/images/photo-m3.jpg" alt="Photo 3" /></div>
-              <div className="pf m4"><img src="/images/photo-m4.jpg" alt="Photo 4" /></div>
-              <div className="pf m5"><img src="/images/photo-m5.jpg" alt="Photo 5" /></div>
-              <div className="pf m6"><img src="/images/photo-m6.jpg" alt="Photo 6" /></div>
-              <div className="pf m7"><img src="/images/photo-m7.jpg" alt="Photo 7" /></div>
+              {PHOTOS.map((src, idx) => (
+                <div key={idx} className={`pf m${idx + 1}`} onClick={() => setLightboxIndex(idx)}>
+                  <img src={src} alt={`Photo ${idx + 1}`} style={{ cursor: 'pointer' }} />
+                </div>
+              ))}
               {/* eslint-enable @next/next/no-img-element */}
             </div>
           </R>
@@ -230,7 +284,14 @@ export default function WeddingEcard() {
               Saturday 19 December 2026 · 12:59 PM
             </div>
           </R>
-          <R delay={0.5}><span className="hashtag" style={{ fontSize: '18px' }}>#ItWasMeantToBeChin</span></R>
+          <R delay={0.5}>
+            <div style={{ marginTop: '15px', marginBottom: '20px' }}>
+              <a href="https://forms.gle/vbJbmdb4bSkvk9yA6" target="_blank" rel="noopener noreferrer" className="btn-register">
+                ลงทะเบียนเข้าร่วม
+              </a>
+            </div>
+          </R>
+          <R delay={0.6}><span className="hashtag" style={{ fontSize: '18px' }}>#ItWasMeantToBeChin</span></R>
         </div>
 
       </div>
@@ -244,6 +305,45 @@ export default function WeddingEcard() {
           scroll
         </span>
       </div>
+
+      {/* ══ LIGHTBOX ══ */}
+      {lightboxIndex !== null && (
+        <div className="lightbox-overlay" onClick={() => setLightboxIndex(null)}>
+          <button className="lightbox-close" onClick={(e) => { e.stopPropagation(); setLightboxIndex(null); }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+
+          <button className="lightbox-prev" onClick={(e) => { e.stopPropagation(); setLightboxIndex((prev) => (prev === 0 ? PHOTOS.length - 1 : prev! - 1)); }}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+
+          <img
+            key={lightboxIndex}
+            src={PHOTOS[lightboxIndex]}
+            alt="Enlarged Photo"
+            className="lightbox-img"
+            onClick={(e) => e.stopPropagation()}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          />
+
+          <button className="lightbox-next" onClick={(e) => { e.stopPropagation(); setLightboxIndex((prev) => (prev === PHOTOS.length - 1 ? 0 : prev! + 1)); }}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+
+          <div className="lightbox-counter">
+            {lightboxIndex + 1} / {PHOTOS.length}
+          </div>
+        </div>
+      )}
     </>
   );
 }
