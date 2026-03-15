@@ -36,62 +36,6 @@ const SECTIONS = [
 ];
 
 export default function WeddingEcard() {
-  const [activeSection, setActiveSection] = useState('cover');
-  const activeSectionRef = useRef('cover');
-  const isSnapping = useRef(false);
-  const rafRef = useRef<number | null>(null);
-  const wheelAccum = useRef(0);
-  const touchStartY = useRef(0);
-
-  // Keep ref in sync with state so event handlers can read latest value
-  useEffect(() => { activeSectionRef.current = activeSection; }, [activeSection]);
-
-  // easeInOutCubic – smooth start and smooth deceleration
-  const easeInOutCubic = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-
-  // Animate scroll to an exact Y coordinate
-  const smoothScrollTo = (targetY: number, onDone?: () => void) => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    const startY = window.scrollY;
-    const distance = targetY - startY;
-    if (Math.abs(distance) < 2) { isSnapping.current = false; onDone?.(); return; }
-    const duration = Math.min(850, Math.max(500, Math.abs(distance) * 0.6));
-    let startTime: number | null = null;
-    const step = (ts: number) => {
-      if (!startTime) startTime = ts;
-      const t = Math.min((ts - startTime) / duration, 1);
-      window.scrollTo(0, startY + distance * easeInOutCubic(t));
-      if (t < 1) {
-        rafRef.current = requestAnimationFrame(step);
-      } else {
-        isSnapping.current = false;
-        onDone?.();
-      }
-    };
-    rafRef.current = requestAnimationFrame(step);
-  };
-
-  // Navigate to a specific section by id
-  const goToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    isSnapping.current = true;
-    wheelAccum.current = 0; // discard any leftover inertia delta
-    setActiveSection(id);
-    activeSectionRef.current = id;
-    const targetY = el.getBoundingClientRect().top + window.scrollY;
-    smoothScrollTo(targetY, () => { isSnapping.current = false; });
-  };
-
-  // Step one section forward (+1) or backward (-1) from current
-  const stepSection = (dir: 1 | -1) => {
-    if (isSnapping.current) return;
-    const idx = SECTIONS.findIndex(s => s.id === activeSectionRef.current);
-    const next = SECTIONS[idx + dir];
-    if (!next) return;
-    goToSection(next.id);
-  };
-
   useEffect(() => {
     // Hide scroll hint on first interaction
     const handleScrollHint = () => {
@@ -99,108 +43,31 @@ export default function WeddingEcard() {
       if (sh) sh.classList.add('gone');
     };
     window.addEventListener('scroll', handleScrollHint, { once: true });
-
-    // Wheel: fire once per gesture, then hard-lock input for LOCK_MS.
-    // This is the only reliable solution for Mac trackpad inertia —
-    // we don't try to detect when inertia ends, we just freeze input.
-    const WHEEL_THRESHOLD = 30;
-    const LOCK_MS = 1000; // longer than max animation (850ms) + inertia buffer
-    let locked = false;
-    let lockTimer: ReturnType<typeof setTimeout> | null = null;
-
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      if (locked || isSnapping.current) return;
-
-      wheelAccum.current += e.deltaY;
-      if (Math.abs(wheelAccum.current) >= WHEEL_THRESHOLD) {
-        const dir = wheelAccum.current > 0 ? 1 : -1;
-        wheelAccum.current = 0;
-        locked = true;
-        if (lockTimer) clearTimeout(lockTimer);
-        lockTimer = setTimeout(() => {
-          locked = false;
-          wheelAccum.current = 0;
-        }, LOCK_MS);
-        stepSection(dir as 1 | -1);
-      }
-    };
-
-    // Touch: detect swipe direction on touchend
-    const handleTouchStart = (e: TouchEvent) => {
-      touchStartY.current = e.touches[0].clientY;
-    };
-    const handleTouchEnd = (e: TouchEvent) => {
-      if (isSnapping.current) return;
-      const dy = touchStartY.current - e.changedTouches[0].clientY;
-      if (Math.abs(dy) > 30) stepSection(dy > 0 ? 1 : -1);
-    };
-
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchend', handleTouchEnd, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', handleScrollHint);
-      window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchend', handleTouchEnd);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => window.removeEventListener('scroll', handleScrollHint);
   }, []);
-
-  // Update active dot via IntersectionObserver (fallback / initial)
-  useEffect(() => {
-    const observers: IntersectionObserver[] = [];
-    SECTIONS.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const obs = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) { setActiveSection(id); activeSectionRef.current = id; } },
-        { threshold: 0.5 }
-      );
-      obs.observe(el);
-      observers.push(obs);
-    });
-    return () => observers.forEach(o => o.disconnect());
-  }, []);
-
-  const scrollTo = (id: string) => goToSection(id);
 
   return (
     <>
-      {/* ══ NAV DOTS ══ */}
-      <nav className="nav-dots" aria-label="Section navigation">
-        {SECTIONS.map(({ id, label }) => (
-          <button
-            key={id}
-            className={`nav-dot${activeSection === id ? ' active' : ''}`}
-            onClick={() => scrollTo(id)}
-            aria-label={label}
-            title={label}
-          />
-        ))}
-      </nav>
-
       <div className="page-wrap">
 
         {/* ══ COVER ══ */}
         <div className="sec" id="cover">
-          <R className="xs">OUR HEARTS ARE FULL OF JOY</R>
+          <R className="xs">
+            <div style={{ fontSize: 'clamp(9px, 2.2vw, 12px)', letterSpacing: '.18em' }}>OUR HEARTS ARE FULL OF JOY</div>
+          </R>
           <R className="div" delay={0.1} />
           <R className="gv ds" delay={0.1}>
             Saturday 19<sup style={{ fontSize: '.38em', verticalAlign: 'super' }}>th</sup>
           </R>
           <R className="cinzel" delay={0.2} >
-            <div style={{ fontSize: '22px', letterSpacing: '.45em', color: 'var(--muted)' }}>DECEMBER</div>
+            <div style={{ fontSize: '18px', letterSpacing: '.35em', color: 'var(--muted)' }}>DECEMBER</div>
           </R>
           <R className="xs" delay={0.2}>
-            <div style={{ marginTop: '-5px' }}>2 0 2 6</div>
+            <div style={{ marginTop: '-4px', fontSize: 'clamp(11px, 2.5vw, 13px)', letterSpacing: '.35em' }}>2 0 2 6</div>
           </R>
           <R className="div-lg" delay={0.2} />
           <R className="cinzel" delay={0.3}>
-            <div style={{ fontSize: '15px', letterSpacing: '.25em', color: 'var(--muted)', lineHeight: '2.4' }}>
+            <div style={{ fontSize: 'clamp(9px, 2vw, 12px)', letterSpacing: '.18em', color: 'var(--muted)', lineHeight: '2' }}>
               YOU ARE INVITED TO THE WEDDING OF
             </div>
           </R>
@@ -210,10 +77,10 @@ export default function WeddingEcard() {
           </R>
           <R className="div-lg" delay={0.4} />
           <R className="xs" delay={0.4}>
-            <div style={{ letterSpacing: '.36em' }}>AT KACHONG HILLS TENTED RESORT TRANG</div>
+            <div style={{ fontSize: 'clamp(9px, 1.8vw, 11px)', letterSpacing: '.16em' }}>AT KACHONG HILLS TENTED RESORT TRANG</div>
           </R>
           <R className="xs" delay={0.5}>
-            <div style={{ letterSpacing: '.2em', marginTop: '-4px' }}>1 2 : 5 9 &nbsp;&nbsp; P M</div>
+            <div style={{ fontSize: '11px', letterSpacing: '.2em', marginTop: '-2px' }}>1 2 : 5 9 &nbsp;&nbsp; P M</div>
           </R>
         </div>
         <div className="sep"></div>
