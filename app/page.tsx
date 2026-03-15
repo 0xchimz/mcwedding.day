@@ -254,7 +254,7 @@ export default function WeddingEcard() {
         <div className="sep"></div>
 
         {/* ══ CLOSING ══ */}
-        <div className="sec" id="closing" style={{ paddingBottom: '95px' }}>
+        <div className="sec" id="closing">
           <R className="gv" >
             <div style={{ fontSize: '48px' }}>We&apos;re Getting Married!</div>
           </R>
@@ -286,7 +286,7 @@ export default function WeddingEcard() {
           <R delay={0.5}>
             <div style={{ marginTop: '15px', marginBottom: '20px' }}>
               <a href="https://forms.gle/vbJbmdb4bSkvk9yA6" target="_blank" rel="noopener noreferrer" className="btn-register">
-                ตอบรับ/ปฏิเสธการเข้าร่วมงาน 💕
+                ฟอร์มยืนยันการเข้าร่วมงาน 💕
               </a>
             </div>
           </R>
