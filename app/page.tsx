@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { MapPin } from 'lucide-react';
+import { MapPin, MousePointerClick } from 'lucide-react';
 
 /** Fade-up animation variant for each child element */
 function R({ children, delay = 0, className = '' }: { children?: React.ReactNode; delay?: number; className?: string }) {
@@ -86,12 +86,18 @@ export default function WeddingEcard() {
   }, [lightboxIndex]);
 
   useEffect(() => {
-    // Hide scroll hint on first interaction
     const handleScrollHint = () => {
       const sh = document.getElementById('sh');
-      if (sh) sh.classList.add('gone');
+      if (!sh) return;
+      if (window.scrollY > 30) {
+        sh.classList.add('gone');
+      } else {
+        sh.classList.remove('gone');
+      }
     };
-    window.addEventListener('scroll', handleScrollHint, { once: true });
+    window.addEventListener('scroll', handleScrollHint);
+    // Call once to set initial state
+    handleScrollHint();
     return () => window.removeEventListener('scroll', handleScrollHint);
   }, []);
 
@@ -130,13 +136,6 @@ export default function WeddingEcard() {
           </R>
           <R className="xs" delay={0.5}>
             <div style={{ fontSize: '11px', letterSpacing: '.2em', marginTop: '-2px' }}>1 2 : 5 9 &nbsp;&nbsp; P M</div>
-          </R>
-          <R delay={0.6}>
-            <div style={{ marginTop: '24px' }}>
-              <a href="https://forms.gle/vbJbmdb4bSkvk9yA6" target="_blank" rel="noopener noreferrer" className="btn-register">
-                ยืนยันการเข้าร่วมงาน
-              </a>
-            </div>
           </R>
         </div>
         <div className="sep"></div>
@@ -180,6 +179,7 @@ export default function WeddingEcard() {
               <a href="https://maps.app.goo.gl/Lv1XmGrwo2rdrdw57" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#e07b8a', textDecoration: 'none', fontWeight: 600 }}>
                 <MapPin size={20} strokeWidth={2.2} />
                 กะช่องฮิลส์ เต็นท์ รีสอร์ท จ.ตรัง
+                <MousePointerClick size={20} fill="currentColor" className="pointer-hint" />
               </a>
             </div>
           </R>
@@ -194,7 +194,7 @@ export default function WeddingEcard() {
           <R delay={0.2} className="w-full">
             <div className="tl-wrap">
               <div className="tl-item">
-                <div className="tl-icon">🏺</div>
+                <div className="tl-icon">💐</div>
                 <div className="tl-time">12:59</div>
                 <div className="tl-lbl">พิธีแห่<br />ขันหมาก</div>
               </div>
@@ -226,7 +226,7 @@ export default function WeddingEcard() {
               <div className="th-dot" style={{ background: '#6fb3d3' }}></div>
             </div>
           </R>
-          <R delay={0.5}><span className="hashtag">#ItWasMeantToBeChin</span></R>
+          <R delay={0.5}><span className="hashtag">#ItWasMeanToBeChin</span></R>
         </div>
         <div className="sep"></div>
 
@@ -287,22 +287,22 @@ export default function WeddingEcard() {
           <R delay={0.5}>
             <div style={{ marginTop: '15px', marginBottom: '20px' }}>
               <a href="https://forms.gle/vbJbmdb4bSkvk9yA6" target="_blank" rel="noopener noreferrer" className="btn-register">
-                ลงทะเบียนเข้าร่วม
+                ตอบรับ/ปฏิเสธการเข้าร่วมงาน 💕
               </a>
             </div>
           </R>
-          <R delay={0.6}><span className="hashtag" style={{ fontSize: '18px' }}>#ItWasMeantToBeChin</span></R>
+          <R delay={0.6}><span className="hashtag" style={{ fontSize: '18px' }}>#ItWasMeanToBeChin</span></R>
         </div>
 
       </div>
 
       {/* ══ SCROLL HINT ══ */}
       <div className="sh" id="sh">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2d5f8a" strokeWidth="2" strokeLinecap="round">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f8a" strokeWidth="2.5" strokeLinecap="round">
           <polyline points="6 9 12 15 18 9" />
         </svg>
-        <span style={{ fontFamily: "'Cinzel', serif", fontSize: '7px', letterSpacing: '.4em', color: 'var(--blue)', textTransform: 'uppercase' }}>
-          scroll
+        <span style={{ textAlign: 'center', fontFamily: "'Noto Serif Thai', serif", fontSize: '13px', fontWeight: '700', letterSpacing: '.05em', color: 'var(--blue)', textShadow: '0 1px 2px rgba(255,255,255,0.8)' }}>
+          เลื่อนลง <br />(ตอบรับเข้าร่วมงานข้างล่าง 👇)
         </span>
       </div>
 
