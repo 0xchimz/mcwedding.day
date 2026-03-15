@@ -28,11 +28,11 @@ function R({ children, delay = 0, className = '' }: { children?: React.ReactNode
 }
 
 const SECTIONS = [
-  { id: 'cover',   label: 'Cover'    },
-  { id: 'names',   label: 'Names'    },
-  { id: 'timeline',label: 'Schedule' },
-  { id: 'photos',  label: 'Photos'   },
-  { id: 'closing', label: 'Closing'  },
+  { id: 'cover', label: 'Cover' },
+  { id: 'names', label: 'Names' },
+  { id: 'timeline', label: 'Schedule' },
+  { id: 'photos', label: 'Photos' },
+  { id: 'closing', label: 'Closing' },
 ];
 
 export default function WeddingEcard() {
@@ -147,7 +147,7 @@ export default function WeddingEcard() {
       window.removeEventListener('touchend', handleTouchEnd);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Update active dot via IntersectionObserver (fallback / initial)
@@ -193,14 +193,14 @@ export default function WeddingEcard() {
             Saturday 19<sup style={{ fontSize: '.38em', verticalAlign: 'super' }}>th</sup>
           </R>
           <R className="cinzel" delay={0.2} >
-            <div style={{ fontSize: '14px', letterSpacing: '.55em', color: 'var(--muted)' }}>DECEMBER</div>
+            <div style={{ fontSize: '17px', letterSpacing: '.55em', color: 'var(--muted)' }}>DECEMBER</div>
           </R>
           <R className="xs" delay={0.2}>
             <div style={{ marginTop: '-5px' }}>2 0 2 6</div>
           </R>
           <R className="div-lg" delay={0.2} />
           <R className="cinzel" delay={0.3}>
-            <div style={{ fontSize: '9px', letterSpacing: '.35em', color: 'var(--muted)', lineHeight: '2.4' }}>
+            <div style={{ fontSize: '11px', letterSpacing: '.35em', color: 'var(--muted)', lineHeight: '2.4' }}>
               YOU ARE INVITED TO THE WEDDING OF
             </div>
           </R>
@@ -223,7 +223,7 @@ export default function WeddingEcard() {
           <R className="thai sm" >
             <div style={{ lineHeight: '2.2' }}>
               นายเจริญ กิจศิริพิพัฒน์ &amp; นางสุมิตรา กิจศิริพิพัฒน์<br />
-              <span style={{ fontSize: '11px' }}>และ</span><br />
+              <span style={{ fontSize: '13px' }}>และ</span><br />
               นายวิชิต ซุ่นอื้อ &amp; นางพรทิพย์ ซุ่นอื้อ
             </div>
           </R>
@@ -242,10 +242,10 @@ export default function WeddingEcard() {
           <R className="div" delay={0.4} />
           <R delay={0.4}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '17px', justifyContent: 'center' }}>
-              <div className="cor" style={{ fontSize: '60px', fontWeight: '300', color: 'var(--muted)', lineHeight: '1' }}>19</div>
+              <div className="cor" style={{ fontSize: '70px', fontWeight: '300', color: 'var(--muted)', lineHeight: '1' }}>19</div>
               <div style={{ textAlign: 'left', borderLeft: '1px solid rgba(45,95,138,.2)', paddingLeft: '14px' }}>
-                <div className="thai" style={{ fontSize: '14px', color: 'var(--text)' }}>ธันวาคม ๒๕๖๙</div>
-                <div style={{ fontSize: '11px', letterSpacing: '.08em', color: 'var(--muted)' }}>December 2026</div>
+                <div className="thai" style={{ fontSize: '17px', color: 'var(--text)' }}>ธันวาคม ๒๕๖๙</div>
+                <div style={{ fontSize: '13px', letterSpacing: '.08em', color: 'var(--muted)' }}>December 2026</div>
               </div>
             </div>
           </R>
@@ -253,9 +253,9 @@ export default function WeddingEcard() {
             <div style={{ marginTop: '4px' }}>KACHONG HILLS TENTED RESORT TRANG</div>
           </R>
           <R className="thai" delay={0.5}>
-            <div style={{ fontSize: '12px' }}>
+            <div style={{ fontSize: '15px' }}>
               <a href="https://maps.app.goo.gl/Lv1XmGrwo2rdrdw57" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#e07b8a', textDecoration: 'none', fontWeight: 600 }}>
-                <MapPin size={14} strokeWidth={2.2} />
+                <MapPin size={16} strokeWidth={2.2} />
                 กะช่องฮิลส์ เต็นท์ รีสอร์ท จ.ตรัง
               </a>
             </div>
@@ -336,20 +336,12 @@ export default function WeddingEcard() {
           <R className="gv" >
             <div style={{ fontSize: '41px' }}>We&apos;re Getting Married!</div>
           </R>
-          <R delay={0.1}>
-            <div className="c-grid">
-              {/* eslint-disable @next/next/no-img-element */}
-              <div className="c-img"><img src="/images/closing-left.jpg" alt="Closing Photo" /></div>
-              <div className="c-img"><img src="/images/closing-right.jpg" alt="Closing Photo" /></div>
-              {/* eslint-enable @next/next/no-img-element */}
-            </div>
-          </R>
           <R delay={0.2}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/images/logo-closing.png" alt="Logo" style={{ width: '178px', height: '178px', objectFit: 'contain' }} />
           </R>
           <R className="cinzel" delay={0.2}>
-            <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--blue)', letterSpacing: '.12em' }}>
+            <div style={{ fontSize: '19px', fontWeight: '600', color: 'var(--blue)', letterSpacing: '.12em' }}>
               NITCHAWEE &amp; CHINNABHORN
             </div>
           </R>
@@ -361,16 +353,16 @@ export default function WeddingEcard() {
           </R>
           <R className="div-lg" delay={0.3} />
           <R className="thai" delay={0.4}>
-            <div style={{ fontSize: '13px', color: 'var(--muted)', lineHeight: '2.1' }}>
+            <div style={{ fontSize: '15px', color: 'var(--muted)', lineHeight: '2.1' }}>
               Kachong Hills Tented Resort Trang<br />
               <a href="https://maps.app.goo.gl/Lv1XmGrwo2rdrdw57" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#e07b8a', textDecoration: 'none', fontWeight: 600 }}>
-                <MapPin size={15} strokeWidth={2.2} />
+                <MapPin size={16} strokeWidth={2.2} />
                 กะช่องฮิลส์ เต็นท์ รีสอร์ท จ.ตรัง
               </a><br />
               Saturday 19 December 2026 · 12:59 PM
             </div>
           </R>
-          <R delay={0.5}><span className="hashtag" style={{ fontSize: '12px' }}>#ItWasMeantToBeChin</span></R>
+          <R delay={0.5}><span className="hashtag" style={{ fontSize: '15px' }}>#ItWasMeantToBeChin</span></R>
         </div>
 
       </div>
