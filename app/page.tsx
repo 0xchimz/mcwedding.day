@@ -1,36 +1,188 @@
 'use client';
 
-import { useEffect } from 'react';
-import { motion } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
 import { MapPin } from 'lucide-react';
 
 /** Fade-up animation variant for each child element */
 function R({ children, delay = 0, className = '' }: { children?: React.ReactNode; delay?: number; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { el.classList.add('visible'); obs.disconnect(); } },
+      { threshold: 0.06 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
   return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.06 }}
-      transition={{ duration: 0.7, ease: 'easeOut', delay }}
+    <div
+      ref={ref}
+      className={`reveal${className ? ` ${className}` : ''}`}
+      style={delay ? { transitionDelay: `${delay}s` } : undefined}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
+const SECTIONS = [
+  { id: 'cover',   label: 'Cover'    },
+  { id: 'names',   label: 'Names'    },
+  { id: 'timeline',label: 'Schedule' },
+  { id: 'photos',  label: 'Photos'   },
+  { id: 'closing', label: 'Closing'  },
+];
+
 export default function WeddingEcard() {
+  const [activeSection, setActiveSection] = useState('cover');
+  const activeSectionRef = useRef('cover');
+  const isSnapping = useRef(false);
+  const rafRef = useRef<number | null>(null);
+  const wheelAccum = useRef(0);
+  const touchStartY = useRef(0);
+
+  // Keep ref in sync with state so event handlers can read latest value
+  useEffect(() => { activeSectionRef.current = activeSection; }, [activeSection]);
+
+  // easeOutExpo – fast start, smooth gentle deceleration at the end
+  const easeOutExpo = (t: number) => t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+
+  // Animate scroll to an exact Y coordinate
+  const smoothScrollTo = (targetY: number, onDone?: () => void) => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    const startY = window.scrollY;
+    const distance = targetY - startY;
+    if (Math.abs(distance) < 2) { isSnapping.current = false; onDone?.(); return; }
+    const duration = Math.min(700, Math.max(350, Math.abs(distance) * 0.5));
+    let startTime: number | null = null;
+    const step = (ts: number) => {
+      if (!startTime) startTime = ts;
+      const t = Math.min((ts - startTime) / duration, 1);
+      window.scrollTo(0, startY + distance * easeOutExpo(t));
+      if (t < 1) {
+        rafRef.current = requestAnimationFrame(step);
+      } else {
+        isSnapping.current = false;
+        onDone?.();
+      }
+    };
+    rafRef.current = requestAnimationFrame(step);
+  };
+
+  // Navigate to a specific section by id
+  const goToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    isSnapping.current = true;
+    wheelAccum.current = 0; // discard any leftover inertia delta
+    setActiveSection(id);
+    activeSectionRef.current = id;
+    const targetY = el.getBoundingClientRect().top + window.scrollY;
+    smoothScrollTo(targetY, () => { isSnapping.current = false; });
+  };
+
+  // Step one section forward (+1) or backward (-1) from current
+  const stepSection = (dir: 1 | -1) => {
+    if (isSnapping.current) return;
+    const idx = SECTIONS.findIndex(s => s.id === activeSectionRef.current);
+    const next = SECTIONS[idx + dir];
+    if (!next) return;
+    goToSection(next.id);
+  };
+
   useEffect(() => {
-    const handleScroll = () => {
+    // Hide scroll hint on first interaction
+    const handleScrollHint = () => {
       const sh = document.getElementById('sh');
       if (sh) sh.classList.add('gone');
     };
-    window.addEventListener('scroll', handleScroll, { once: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScrollHint, { once: true });
+
+    // Wheel: fire once per gesture, then hard-lock input for LOCK_MS.
+    // This is the only reliable solution for Mac trackpad inertia —
+    // we don't try to detect when inertia ends, we just freeze input.
+    const WHEEL_THRESHOLD = 30;
+    const LOCK_MS = 950; // longer than max animation (700ms) + inertia buffer
+    let locked = false;
+    let lockTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      if (locked || isSnapping.current) return;
+
+      wheelAccum.current += e.deltaY;
+      if (Math.abs(wheelAccum.current) >= WHEEL_THRESHOLD) {
+        const dir = wheelAccum.current > 0 ? 1 : -1;
+        wheelAccum.current = 0;
+        locked = true;
+        if (lockTimer) clearTimeout(lockTimer);
+        lockTimer = setTimeout(() => {
+          locked = false;
+          wheelAccum.current = 0;
+        }, LOCK_MS);
+        stepSection(dir as 1 | -1);
+      }
+    };
+
+    // Touch: detect swipe direction on touchend
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY.current = e.touches[0].clientY;
+    };
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (isSnapping.current) return;
+      const dy = touchStartY.current - e.changedTouches[0].clientY;
+      if (Math.abs(dy) > 30) stepSection(dy > 0 ? 1 : -1);
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScrollHint);
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Update active dot via IntersectionObserver (fallback / initial)
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+    SECTIONS.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) { setActiveSection(id); activeSectionRef.current = id; } },
+        { threshold: 0.5 }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+    return () => observers.forEach(o => o.disconnect());
+  }, []);
+
+  const scrollTo = (id: string) => goToSection(id);
 
   return (
     <>
+      {/* ══ NAV DOTS ══ */}
+      <nav className="nav-dots" aria-label="Section navigation">
+        {SECTIONS.map(({ id, label }) => (
+          <button
+            key={id}
+            className={`nav-dot${activeSection === id ? ' active' : ''}`}
+            onClick={() => scrollTo(id)}
+            aria-label={label}
+            title={label}
+          />
+        ))}
+      </nav>
+
       <div className="page-wrap">
 
         {/* ══ COVER ══ */}
@@ -67,7 +219,7 @@ export default function WeddingEcard() {
         <div className="sep"></div>
 
         {/* ══ NAMES ══ */}
-        <div className="sec">
+        <div className="sec" id="names">
           <R className="thai sm" >
             <div style={{ lineHeight: '2.2' }}>
               นายเจริญ กิจศิริพิพัฒน์ &amp; นางสุมิตรา กิจศิริพิพัฒน์<br />
@@ -112,7 +264,7 @@ export default function WeddingEcard() {
         <div className="sep"></div>
 
         {/* ══ TIMELINE ══ */}
-        <div className="sec">
+        <div className="sec" id="timeline">
           <R className="xs">WEDDING SCHEDULE · กำหนดการวันงาน</R>
           <R className="div-lg" delay={0.1} />
           <R delay={0.2}>
@@ -155,7 +307,7 @@ export default function WeddingEcard() {
         <div className="sep"></div>
 
         {/* ══ MAGAZINE PHOTOS ══ */}
-        <div className="sec" style={{ gap: '12px' }}>
+        <div className="sec" id="photos" style={{ gap: '12px' }}>
           <R className="xs">OUR JOURNEY TOGETHER</R>
           <R className="div" delay={0.1} />
           <R delay={0.1}>
@@ -180,7 +332,7 @@ export default function WeddingEcard() {
         <div className="sep"></div>
 
         {/* ══ CLOSING ══ */}
-        <div className="sec" style={{ paddingBottom: '95px' }}>
+        <div className="sec" id="closing" style={{ paddingBottom: '95px' }}>
           <R className="gv" >
             <div style={{ fontSize: '41px' }}>We&apos;re Getting Married!</div>
           </R>
