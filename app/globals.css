@@ -34,9 +34,9 @@ body::before {
 .cinzel { font-family: 'Cinzel', serif; }
 .cor { font-family: 'Cormorant Garamond', serif; }
 .thai { font-family: 'Noto Serif Thai', serif; }
-.xs { font-size: clamp(10px, 1.6vw, 13px); letter-spacing: .45em; text-transform: uppercase; color: var(--muted); font-family: 'Cinzel', serif; }
-.sm { font-size: clamp(14px, 2.2vw, 16px); color: var(--muted); line-height: 1.9; }
-.hashtag { font-family: 'Cinzel', serif; font-size: clamp(14px, 2.2vw, 16px); font-weight: 500; color: var(--blue); letter-spacing: .06em; opacity: .85; }
+.xs { font-size: clamp(14px, 2.5vw, 16px); letter-spacing: .35em; text-transform: uppercase; color: var(--muted); font-family: 'Cinzel', serif; }
+.sm { font-size: clamp(18px, 3.5vw, 22px); color: var(--muted); line-height: 1.8; }
+.hashtag { font-family: 'Cinzel', serif; font-size: clamp(16px, 3vw, 20px); font-weight: 500; color: var(--blue); letter-spacing: .06em; opacity: .85; }
 
 /* Scroll-reveal animation (Intersection Observer) */
 .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1), transform 0.75s cubic-bezier(0.22,1,0.36,1); }
@@ -45,13 +45,14 @@ body::before {
 
 /* COVER */
 #cover { padding-top: 85px; padding-bottom: 75px; }
-#cover .ds { font-size: clamp(72px, 16vw, 110px); line-height: 1.05; }
+#cover .ds { font-size: clamp(80px, 18vw, 120px); line-height: 1.05; font-weight: 500; }
+#cover .xs, #cover .cinzel { font-weight: 700; }
 #cover .logo { width: 178px; height: 178px; object-fit: contain; }
 
 /* NAMES */
-.name-en { font-family: 'Cinzel', serif; font-size: clamp(28px, 5.5vw, 36px); font-weight: 600; color: var(--blue); letter-spacing: .1em; }
-.name-th { font-size: clamp(14px, 2.4vw, 17px); color: var(--muted); }
-.amp { font-family: 'Great Vibes', cursive; font-size: clamp(50px, 9vw, 64px); color: var(--blue); opacity: .65; line-height: 1; }
+.name-en { font-family: 'Cinzel', serif; font-size: clamp(28px, 4.5vw, 32px); font-weight: 600; color: var(--blue); letter-spacing: .1em; }
+.name-th { font-size: clamp(18px, 2.5vw, 20px); color: var(--muted); }
+.amp { font-family: 'Great Vibes', cursive; font-size: clamp(50px, 7vw, 60px); color: var(--blue); opacity: .65; line-height: 1; }
 
 /* TIMELINE */
 .tl-wrap { display: flex; justify-content: space-between; position: relative; width: 100%; padding: 8px 0 4px; }
@@ -65,8 +66,8 @@ body::before {
   border: 1px solid rgba(45,95,138,.16); display: flex; align-items: center; justify-content: center;
   font-size: 19px; position: relative; z-index: 1; box-shadow: 0 3px 10px rgba(0,0,0,.05);
 }
-.tl-time { font-family: 'Cinzel', serif; font-size: clamp(12px, 2vw, 14px); font-weight: 500; color: var(--blue); }
-.tl-lbl { font-size: clamp(11px, 1.8vw, 13px); color: var(--muted); line-height: 1.5; text-align: center; }
+.tl-time { font-family: 'Cinzel', serif; font-size: clamp(16px, 2.5vw, 20px); font-weight: 500; color: var(--blue); }
+.tl-lbl { font-size: clamp(15px, 2.5vw, 18px); color: var(--muted); line-height: 1.5; text-align: center; }
 .th-row { display: flex; gap: 9px; justify-content: center; }
 .th-dot { width: 20px; height: 20px; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
 
@@ -94,9 +95,9 @@ body::before {
   background: #ede8e2;
 }
 .pf img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.cap-s { font-family: 'Great Vibes', cursive; font-size: clamp(28px, 5vw, 36px); color: var(--blue); display: block; margin-bottom: 3px; }
-.cap-th { font-size: clamp(13px, 2.1vw, 15px); color: var(--muted); line-height: 1.8; }
-.pnum { font-family: 'Cormorant Garamond', serif; font-size: clamp(12px, 1.8vw, 14px); letter-spacing: .3em; color: rgba(45,95,138,.25); font-style: italic; }
+.cap-s { font-family: 'Great Vibes', cursive; font-size: clamp(32px, 6vw, 40px); color: var(--blue); display: block; margin-bottom: 3px; }
+.cap-th { font-size: clamp(16px, 2.8vw, 20px); color: var(--muted); line-height: 1.8; }
+.pnum { font-family: 'Cormorant Garamond', serif; font-size: clamp(14px, 2vw, 18px); letter-spacing: .3em; color: rgba(45,95,138,.25); font-style: italic; }
 
 /* CLOSING */
 .c-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
