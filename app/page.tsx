@@ -280,8 +280,7 @@ export default function WeddingEcard() {
               <a href="https://maps.app.goo.gl/Lv1XmGrwo2rdrdw57" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#e07b8a', textDecoration: 'none', fontWeight: 600 }}>
                 <MapPin size={18} strokeWidth={2.2} />
                 กะช่องฮิลส์ เต็นท์ รีสอร์ท จ.ตรัง
-              </a><br />
-              Saturday 19 December 2026 · 12:59 PM
+              </a>
             </div>
           </R>
           <R delay={0.5}>
