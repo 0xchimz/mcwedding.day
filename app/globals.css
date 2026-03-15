@@ -391,13 +391,12 @@ body::before {
 }
 
 @keyframes pulse-fast {
-  0% { transform: scale(1); box-shadow: 0 4px 15px rgba(45, 95, 138, 0.25); }
-  50% { transform: scale(1.05); box-shadow: 0 10px 25px rgba(45, 95, 138, 0.45); }
-  100% { transform: scale(1); box-shadow: 0 4px 15px rgba(45, 95, 138, 0.25); }
+  0%, 20%, 40%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(45, 95, 138, 0.25); }
+  10%, 30% { transform: scale(1.08); box-shadow: 0 10px 25px rgba(45, 95, 138, 0.45); }
 }
 
 .btn-register {
-  animation: pulse-fast 0.8s infinite ease-in-out;
+  animation: pulse-fast 3s infinite ease-in-out;
 }
 
 /* SCROLL HINT */
